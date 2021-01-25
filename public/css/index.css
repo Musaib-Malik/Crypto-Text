@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+body {
+  background-color: aliceblue;
+}
+
+#container {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#container .heading h1 {
+  font-family: poppins;
+  font-weight: 600;
+}
+
+#container .links-container a {
+  margin: 1rem;
+  padding: 10px 16px;
+  font-family: poppins;
+}

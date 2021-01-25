@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encrypt Text</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/encrypt.css" />
+  </head>
+  <body>
+    <div id="container">
+      <nav>
+        <h1>Encrypt Text</h1>
+      </nav>
+
+      <form class="main">
+        <div class="input-group mb-3">
+          <div class="input-group mb-3">
+            <div class="input-group-append">
+              <input
+                type="text"
+                placeholder="Enter Plain Text ..."
+                id="plain-text"
+                required
+                name="plainText"
+                class="form-control"
+              />
+            </div>
+            <button class="btn btn-primary" id="encrypt" type="submit">
+              Encrypt
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="modal-bg">
+        <div id="modal">
+          <span class="modal-close">&times;</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Open Modal
+      document.querySelector("#encrypt").addEventListener("click", (e) => {
+        if (document.querySelector("#plain-text").value.length !== 0) {
+          document.querySelector(".modal-bg").classList.add("bg-active");
+        }
+      });
+
+      // Get Encrypted Messages
+      document.querySelector("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Get Plain text
+        const plainText = document.querySelector("#plain-text").value;
+
+        // Get Encrypted String
+        const res = await fetch(
+          `https://crypto-text.herokuapp.com/encrypt/${plainText}`,
+        );
+        const data = await res.json();
+
+        document.querySelector("#modal").innerHTML = `
+        <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon3"><strong>Key</strong></span>
+  </div>
+  <input type="text" class="form-control" disabled value="${data.key}" id="key" aria-describedby="basic-addon3">
+</div>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon3"><strong>IV</strong></span>
+  </div>
+  <input type="text" class="form-control" disabled value="${data.iv}" id="key" aria-describedby="basic-addon3">
+</div>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon3"><strong>Encrypted Text</strong></span>
+  </div>
+  <input type="text" class="form-control" disabled value="${data.encryptedText}" id="key" aria-describedby="basic-addon3">
+</div>
+
+<p style="margin-top:2rem ">Algorithm: <strong>aes-256-cbc</strong></p>
+<span class="modal-close">&times;</span>
+        `;
+
+        //  Close Modal
+        document
+          .querySelector(".modal-close")
+          .addEventListener("click", (e) => {
+            document.querySelector(".modal-bg").classList.remove("bg-active");
+          });
+      });
+    </script>
+  </body>
+</html>

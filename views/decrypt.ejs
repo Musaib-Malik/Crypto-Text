@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decrypt Text</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/decrypt.css" />
+  </head>
+  <body>
+    <div id="container">
+      <nav>
+        <h1>Decrypt Text</h1>
+      </nav>
+      <form>
+        <div class="input-group mb-3">
+          <div class="input-group mb-3">
+            <div class="input-group-append">
+              <input
+                type="text"
+                placeholder="Enter Encrypted Text ..."
+                id="encrypted-text"
+                required
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group mb-3">
+            <div class="input-group-append">
+              <input
+                type="text"
+                placeholder="Secret Key"
+                id="secret-key"
+                required
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group mb-3">
+            <div class="input-group-append">
+              <input
+                type="text"
+                placeholder="Initialization Vector ..."
+                id="iv"
+                required
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit" id="decrypt">Decrypt</button>
+      </form>
+
+      <div class="modal-bg">
+        <div id="modal">
+          <span class="modal-close">&times;</span>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    
+  <script>
+
+      
+    // UI Variables
+    const decryptBtn = document.getElementById("decrypt");
+    
+    decryptBtn.addEventListener("click", (e) => {
+
+      const encryptedText = document.getElementById("encrypted-text");
+        const secretKey = document.getElementById("secret-key");
+        const iv = document.getElementById("iv");
+
+            if (encryptedText.value !== '' && secretKey.value !== '' && iv.value !== '') {
+              document.querySelector(".modal-bg").classList.add("bg-active");
+            }
+          });
+
+    document.querySelector("form").addEventListener("submit", async(e) => {
+        e.preventDefault()
+
+        const encryptedText = document.getElementById("encrypted-text");
+        const secretKey = document.getElementById("secret-key");
+        const iv = document.getElementById("iv");
+      
+  
+           //   Get Decrypted Text
+      const res = await fetch(`https://crypto-text.herokuapp.com/decrypt/${encryptedText.value}/${secretKey.value}/${iv.value}`)
+      const data = await res.text()
+
+      if(data == 'Bad Request') {
+          document.getElementById("modal").innerHTML = `
+          <h2>Error: </h2> <p>Invalid Crypto Credentials</p>
+      <span class="modal-close">&times;</span>
+      `
+      } else {
+          document.getElementById("modal").innerHTML = `<h2>Plain Text</h2>
+      <div class="input-group">
+      <div class="input-group-prepend">
+      <span class="input-group-text">Value</span>
+      </div>
+      <input type="text" class="form-control" disabled value="${data}" id="key" aria-describedby="basic-addon3">
+      </div>
+      <span class="modal-close">&times;</span>
+      `
+      
+      }
+
+   
+
+       //  Close Modal
+       document
+        .querySelector(".modal-close")
+        .addEventListener("click", (e) => {
+          document.querySelector(".modal-bg").classList.remove("bg-active");
+        });
+    })
+</script>
+  </body>
+
+</html>
